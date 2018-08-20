@@ -38,11 +38,12 @@ while c_idx <= max(predict):
 
 # Data Visualization
 # Expects: DataMatrix 0 - 1 - DisplaySize - 2 (Color Attribute)
-plotInfo = ['Cluster 1', 'Age', 'Cholesterol']
-get_plot(data_matrix[0][0], data_matrix[0][1], 60, data_matrix[0][2], plotInfo)
-get_plot(data_matrix[1][0], data_matrix[1][1], 60, data_matrix[1][2], plotInfo)
-get_plot(data_matrix[2][0], data_matrix[2][1], 60, data_matrix[2][2], plotInfo)
-get_plot(data_matrix[3][0], data_matrix[3][1], 60, data_matrix[3][2], plotInfo)
+plt_idx = 0
+
+while plt_idx < len(data_matrix):
+    plotInfo = ['Cluster ' + str(plt_idx + 1), 'Age', 'Cholesterol']
+    get_plot(data_matrix[plt_idx][0], data_matrix[plt_idx][1], 60, data_matrix[plt_idx][2], plotInfo)
+    plt_idx += 1
 
 #print(np.mean(data_matrix[1]))
 #print(np.std(data_matrix[1]))
