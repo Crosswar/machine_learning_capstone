@@ -32,7 +32,7 @@ def get_plot(dm0, dm1, size, dmC, plotInfo):
        
         # Data Information
         ax.scatter(dm0, dm1, s = size, c = dmC, cmap = plt.cm.bwr)        
-        
+        ax.grid(False)
         # Annotations
         #for x, y, name, gen in zip(age, cholesterol, gender, gender):
         #    ax.text(x, y, name, color=plot.cm.bwr(gen),

@@ -16,7 +16,7 @@ dataset = pd.read_csv('cleveland.csv')
 # Allocate Columns
 # Prediction: 0 - Sex, 4 - Cholesterol
 # Label:      1 - Gender
-X = dataset.iloc[:, [0, 4, 1]].values
+X = dataset.iloc[:, [4, 0, 1]].values
 
 # Dendogram Analysis - Cluster Number Decision Tool
 # Expects: Data Array, Method, Run(Bool)
@@ -44,6 +44,7 @@ while plt_idx < len(data_matrix):
     plotInfo = ['Cluster ' + str(plt_idx + 1), 'Age', 'Cholesterol']
     get_plot(data_matrix[plt_idx][0], data_matrix[plt_idx][1], 60, data_matrix[plt_idx][2], plotInfo)
     plt_idx += 1
+
 
 #print(np.mean(data_matrix[1]))
 #print(np.std(data_matrix[1]))

@@ -7,6 +7,7 @@ Created on Tue Jun 19 14:09:56 2018
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plot
+from sklearn import mixture
 
 #import dataset
 dataset = pd.read_csv('cleveland.csv')
@@ -18,10 +19,8 @@ hc = AgglomerativeClustering(
     n_clusters = 4, affinity = 'euclidean', linkage='ward')
 y_hc = hc.fit_predict(X)
 
-plot.scatter(X[y_hc == 0, 0], X[y_hc == 0, 1], s = 100, c = 'red', label = 'Cluster 1')
-plot.scatter(X[y_hc == 1, 0], X[y_hc == 1, 1], s = 100, c = 'blue', label = 'Cluster 2')
-plot.scatter(X[y_hc == 2, 0], X[y_hc == 2, 1], s = 100, c = 'green', label = 'Cluster 3')
-plot.scatter(X[y_hc == 3, 0], X[y_hc == 3, 1], s = 100, c = 'black', label = 'Cluster 4')
+# Plot
+plot.scatter(X[:, 0], X[:, 1], s = 100, c = y_hc)
 
 # Plot Info
 plot.title('Clusters')
@@ -53,3 +52,9 @@ print(mean_list)
 
 # Print STD Deviation
 print(deviation_list)
+'''
+
+gmm = mixture.GaussianMixture(n_components=4)
+gmm.fit(X)
+y_hc = gmm.predict(X)
+plot.scatter(X[:, 0], X[:, 1], s = 100, c = y_hc, label = 'Cluster 1')'''
