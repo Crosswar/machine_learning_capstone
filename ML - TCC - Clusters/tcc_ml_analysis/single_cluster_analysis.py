@@ -11,16 +11,16 @@ from sklearn import mixture
 
 #import dataset
 dataset = pd.read_csv('cleveland.csv')
-X = dataset.iloc[:, [0, 4, 1]].values
+X = dataset.iloc[:, [0, 3, 1]].values
 
 # Fit model
 from sklearn.cluster import AgglomerativeClustering
 hc = AgglomerativeClustering(
-    n_clusters = 2, affinity = 'euclidean', linkage='ward')
+    n_clusters = 3, affinity = 'euclidean', linkage='ward')
 y_hc = hc.fit_predict(X)
 
 # Plot
-plot.scatter(X[:, 0], X[:, 1], s = 100, c = y_hc)
+plot.scatter(X[:, 1], X[:, 0], s = 100, c = y_hc)
 
 # Plot Info
 plot.title('Clusters')
