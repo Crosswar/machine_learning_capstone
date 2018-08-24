@@ -16,7 +16,7 @@ dataset = pd.read_csv('cleveland.csv')
 # Allocate Columns
 # Prediction: 0 - Sex, 4 - Cholesterol
 # Label:      1 - Gender
-X = dataset.iloc[:, [4, 0, 1]].values
+X = dataset.iloc[:, [0, 4, 1]].values
 
 # Dendogram Analysis - Cluster Number Decision Tool
 # Expects: Data Array, Method, Run(Bool)
@@ -24,7 +24,7 @@ run_dendogram(X, 'ward', False)
 
 # Fit model
 # Expects: Number of Clusters, Affinity, Linkage, Data Array
-predict = fit_model(4, 'euclidean', 'ward', X)
+predict = fit_model(3, 'euclidean', 'ward', X)
 
 # Get Data - Returns x,y axis and label
 # Expects: Data Array, Predict Result, Cluster Index
