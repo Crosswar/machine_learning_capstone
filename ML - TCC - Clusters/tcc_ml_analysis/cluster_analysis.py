@@ -24,7 +24,7 @@ run_dendogram(X, 'ward', False)
 
 # Fit model
 # Expects: Number of Clusters, Affinity, Linkage, Data Array
-predict = fit_model(3, 'euclidean', 'ward', X)
+predict = fit_model(3, 'manhattan', 'complete', X)
 
 # Get Data - Returns x,y axis and label
 # Expects: Data Array, Predict Result, Cluster Index
@@ -34,7 +34,6 @@ data_matrix = []
 while c_idx <= max(predict):
     data_matrix.append(get_data(X, predict, c_idx))
     c_idx += 1
-
 
 # Data Visualization
 # Expects: DataMatrix 0 - 1 - DisplaySize - 2 (Color Attribute)

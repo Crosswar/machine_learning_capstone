@@ -11,12 +11,12 @@ from sklearn import mixture
 
 #import dataset
 dataset = pd.read_csv('cleveland.csv')
-X = dataset.iloc[:, [0, 3, 1]].values
+X = dataset.iloc[:, [0, 4, 1]].values
 
 # Fit model
 from sklearn.cluster import AgglomerativeClustering
 hc = AgglomerativeClustering(
-    n_clusters = 3, affinity = 'euclidean', linkage='ward')
+    n_clusters = 3, affinity = 'manhattan', linkage='complete')
 y_hc = hc.fit_predict(X)
 
 # Plot
@@ -38,10 +38,10 @@ with plot.style.context('seaborn-whitegrid'):
     ax, fig = plotConfig(7, 5)
        
     # Data Information
-    ax.scatter(X[:, 0], X[:, 1], s = 60, cmap = plot.cm.bwr)        
+    ax.scatter(X[:, 1], X[:, 0], s = 60, cmap = plot.cm.bwr)        
     ax.grid(False)
     # Annotations
-    for x, y, name, gen in zip(X[:, 0], X[:, 1], X[:, 2], X[:, 2]):
+    for x, y, name, gen in zip(X[:, 1], X[:, 0], X[:, 2], X[:, 2]):
         ax.text(x, y, name, color=plot.cm.bwr(gen),
                  fontdict={'family': 'Arial', 'size': 15}) 
 # End Annotations
