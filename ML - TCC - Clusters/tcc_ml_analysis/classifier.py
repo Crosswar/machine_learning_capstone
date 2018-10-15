@@ -9,26 +9,21 @@ import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
 from sklearn.model_selection import train_test_split
-from sklearn.metrics import confusion_matrix, classification_report, accuracy_score, mean_absolute_error
+from sklearn.metrics import confusion_matrix, classification_report, mean_absolute_error
+from sklearn.model_selection import cross_val_score
 from sklearn.preprocessing import StandardScaler, normalize
 from sklearn.naive_bayes import GaussianNB
+from sklearn.ensemble import VotingClassifier
 
 from pre_process import readData, cleanData, getFeatures
-from data_analysis import exportData
+from data_analysis import exportData, exportMetrics
 
 from sklearn.linear_model import LogisticRegressionCV, LogisticRegression
-
 
 # Get the data, split labels and retrieve the features
 data = readData()
 cleanData(data)
 features, label = getFeatures(data)
-
-
-# Exploratory Data - Export results to excel
-exportData(data)
-
-
 
 # Split the 'features' and the label data into training and testing sets
 X_train, X_test, y_train, y_test = train_test_split(features,
@@ -36,37 +31,75 @@ X_train, X_test, y_train, y_test = train_test_split(features,
                                                     test_size = 0.3,
                                                     random_state = 43)
 
-
-# Show the results of the split
-print("Training set has {} samples.".format(X_train.shape[0]))
-print("Testing set has {} samples.".format(X_test.shape[0]))
+# Exploratory Data - Export results to excel
+exportData(data, y_train, y_test, label)
 
 
-model = LogisticRegression(fit_intercept=True,penalty='l1',dual=False,C=1000.0)
-a = model.fit(features, label)
-ypred = model.predict(X_test)
+### Classifiers
+### Logistic Regression
 
-print(classification_report(y_test, ypred))
-print(a.score(X_test, y_test))
+model_lr = LogisticRegression(C=1000.0, class_weight=None, dual=False,
+          fit_intercept=True, intercept_scaling=1, max_iter=100,
+          multi_class='ovr', n_jobs=1, penalty='l1', random_state=0,
+          solver='liblinear', tol=0.0001, verbose=0, warm_start=False)
 
-clf = LogisticRegressionCV(cv= 3, random_state= 0, penalty='l2',
+clf_lr = model_lr.fit(X_train, y_train)
+pred_lr = model_lr.predict(X_test)
+
+print(classification_report(y_test, pred_lr))
+print(clf_lr.score(X_test, y_test))
+
+
+from sklearn.model_selection import StratifiedKFold
+from sklearn.feature_selection import RFECV
+
+# Create the RFE object and compute a cross-validated score.
+svc = LogisticRegression()
+# The "accuracy" scoring is proportional to the number of correct
+# classifications
+rfecv = RFECV(estimator=svc, step=1, cv=StratifiedKFold(2),
+              scoring='accuracy')
+rfecv.fit(X_train, y_train)
+
+print("Optimal number of features : %d" % rfecv.n_features_)
+print(rfecv.get_support(indices=True))
+X_new = rfecv.transform(features)
+print(features.columns[rfecv.get_support()])
+#print(np.absolute(rfecv.estimator_.coef_))
+
+# Plot number of features VS. cross-validation scores
+plt.figure()
+plt.xlabel("Number of features selected")
+plt.ylabel("Cross validation score (nb of correct classifications)")
+plt.plot(range(1, len(rfecv.grid_scores_) + 1), rfecv.grid_scores_)
+plt.show()
+
+
+
+### Logistic Regression - CrossValidation
+clf_lrCV = LogisticRegressionCV(cv= 3, random_state= 0, penalty='l2',
                            multi_class='multinomial').fit(X_train, y_train)
 
-# predict class labels for the training set
-predicted2 = clf.predict(X_test)
+# Predict class labels for the training set
+predicted2 = clf_lrCV.predict(X_test)
 
-print('Mean Absolute Error - ', mean_absolute_error(y_test, predicted2))
-print('LogisticRegression Test - ', clf.score(X_test, y_test))
+print('Mean Absolute Error LRCV- ', mean_absolute_error(y_test, predicted2))
+print('LogisticRegression Test - ', clf_lrCV.score(X_test, y_test))
 
-# Gaussian Naive Bayes
+### Gaussian Naive Bayes
 gnb = GaussianNB()
 gnb = gnb.fit(X_train, y_train)
 predicted3 = gnb.predict(X_test)
+print('Mean Absolute Error GNB - ', mean_absolute_error(y_test, predicted3))
 print('Gaussian NB Test - ', gnb.score(X_test, y_test))
 
 #cm = confusion_matrix(y_train, predicted1)
 print(classification_report(y_test, predicted2))
 print(classification_report(y_test, predicted3))
+
+
+#gnb_lr=VotingClassifier(estimators=[('Guassian Naive Bayes', gnb),('Logistic Regression', clf_lr)], voting='soft', weights=[2,1]).fit(X_train,y_train)
+#print('The accuracy for Guassian Naive Bayes and Logistic Regression:',gnb_lr.score(X_test,y_test))
 
 # Example of a confusion matrix in Python
 #results = confusion_matrix(y_test, predictions)
@@ -82,7 +115,6 @@ print(classification_report(y_test, predicted3))
 #ax = plt.gca()
 # sns.heatmap(df.corr(), annot=True)
 # sns.pairplot(df)
-
 
 
 #sns.distplot(df['age'])
