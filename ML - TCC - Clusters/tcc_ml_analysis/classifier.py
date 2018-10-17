@@ -16,7 +16,7 @@ from sklearn.naive_bayes import GaussianNB
 from sklearn.ensemble import VotingClassifier
 
 from pre_process import readData, cleanData, getFeatures
-from data_analysis import exportData, exportMetrics
+from data_analysis import exportData, exportMetrics, exportPlots
 
 from sklearn.linear_model import LogisticRegressionCV, LogisticRegression
 
@@ -29,19 +29,20 @@ features, label = getFeatures(data)
 X_train, X_test, y_train, y_test = train_test_split(features,
                                                     label,
                                                     test_size = 0.3,
-                                                    random_state = 43)
+                                                    random_state = 0)
 
-# Exploratory Data - Export results to excel
+# Exploratory Data - Export results to excel or images
 exportData(data, y_train, y_test, label)
+exportPlots(data, False)
+exportMetrics()
+
+
 
 
 ### Classifiers
 ### Logistic Regression
 
-model_lr = LogisticRegression(C=1000.0, class_weight=None, dual=False,
-          fit_intercept=True, intercept_scaling=1, max_iter=100,
-          multi_class='ovr', n_jobs=1, penalty='l1', random_state=0,
-          solver='liblinear', tol=0.0001, verbose=0, warm_start=False)
+model_lr = LogisticRegression(random_state=7)
 
 clf_lr = model_lr.fit(X_train, y_train)
 pred_lr = model_lr.predict(X_test)
@@ -57,9 +58,9 @@ from sklearn.feature_selection import RFECV
 svc = LogisticRegression()
 # The "accuracy" scoring is proportional to the number of correct
 # classifications
-rfecv = RFECV(estimator=svc, step=1, cv=StratifiedKFold(2),
+rfecv = RFECV(estimator=svc, step=1, cv=StratifiedKFold(6),
               scoring='accuracy')
-rfecv.fit(X_train, y_train)
+rfecv.fit(X_test, y_test)
 
 print("Optimal number of features : %d" % rfecv.n_features_)
 print(rfecv.get_support(indices=True))
@@ -73,7 +74,6 @@ plt.xlabel("Number of features selected")
 plt.ylabel("Cross validation score (nb of correct classifications)")
 plt.plot(range(1, len(rfecv.grid_scores_) + 1), rfecv.grid_scores_)
 plt.show()
-
 
 
 ### Logistic Regression - CrossValidation
