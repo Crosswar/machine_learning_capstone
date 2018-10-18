@@ -16,7 +16,7 @@ from sklearn.naive_bayes import GaussianNB
 from sklearn.ensemble import VotingClassifier
 
 from pre_process import readData, cleanData, getFeatures
-from data_analysis import exportData, exportMetrics, exportPlots
+from data_analysis import exportData, exportMetrics, exportPlots, calculateDiscrepancy
 
 from sklearn.linear_model import LogisticRegressionCV, LogisticRegression
 
@@ -36,6 +36,9 @@ exportData(data, y_train, y_test, label)
 exportPlots(data, False)
 exportMetrics()
 
+
+# Data analysis
+calculateDiscrepancy(data)
 
 
 

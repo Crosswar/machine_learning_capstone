@@ -15,7 +15,6 @@ mpl.rc("savefig", dpi=150)
 sns.set(color_codes=True)
 
 def exportData(data, y_train, y_test, label):
-
     exploreDF = data.copy()
     exploreDF.drop(['cp', 'fbs', 'restecg', 'thalach', 'exang', 'oldpeak', 'slope', 'ca', 'thal', 'num'],
                    axis=1,
@@ -64,3 +63,30 @@ def exportCategorial():
 
 def exportMetrics():
     return True
+
+def intrinsicDiscrepancy(x,y):
+    sumx = sum(xval for xval in x)
+    sumy = sum(yval for yval in y)
+    id1  = 0.0
+    id2  = 0.0
+    for (xval,yval) in zip(x,y):
+        if (xval>0) and (yval>0):
+            id1 += (float(xval)/sumx) * np.log((float(xval)/sumx)/(float(yval)/sumy))
+            id2 += (float(yval)/sumy) * np.log((float(yval)/sumy)/(float(xval)/sumx))
+    return min(id1,id2)
+
+def calculateDiscrepancy(data):
+    discr_list = []
+
+    for col in range(len(data.columns)):
+        new_data = data.iloc[:, col]
+
+        hist, bin_edges   = np.histogram(new_data, density=False)
+        hist1, bin_edges1 = np.histogram(new_data[data.num > 0], bins=bin_edges, density=False)
+        hist2, bin_edges2 = np.histogram(new_data[data.num == 0], bins=bin_edges, density=False)
+
+        colum_name = data.columns.values[col]
+        discrepancy = intrinsicDiscrepancy(hist1, hist2)
+
+        discr_list.append(str(colum_name) + ' - ' + str(discrepancy))
+    return discr_list
