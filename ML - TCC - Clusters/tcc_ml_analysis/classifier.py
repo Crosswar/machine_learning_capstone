@@ -37,10 +37,6 @@ exportPlots(data, False)
 exportMetrics()
 
 
-# Data analysis
-calculateDiscrepancy(data)
-
-
 
 ### Classifiers
 ### Logistic Regression
@@ -49,6 +45,8 @@ model_lr = LogisticRegression(random_state=7)
 
 clf_lr = model_lr.fit(X_train, y_train)
 pred_lr = model_lr.predict(X_test)
+
+plt.hist(pred_lr)
 
 print(classification_report(y_test, pred_lr))
 print(clf_lr.score(X_test, y_test))

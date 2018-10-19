@@ -9,6 +9,7 @@ import matplotlib as mpl
 import matplotlib.pyplot as plt
 import numpy as np
 import seaborn as sns
+import scipy.stats as sc
 
 # Set dpi of images to obtain a higher quality
 mpl.rc("savefig", dpi=150)
@@ -28,12 +29,18 @@ def exportData(data, y_train, y_test, label):
                            "Total": label.value_counts().tolist()}, index=["Healthy", "Sick"])
     freqs[["Training dataset", "Test dataset", "Total"]]
 
+    # Intrinsic Discrepancy
+    intr_discr, cols = calculateDiscrepancy(data)
+    intr_list = [cols, intr_discr]
+    r_discr = pd.DataFrame.from_dict(intr_list)
+
     # Export to Excel - Separate Sheets
     writer = pd.ExcelWriter('exploratory_analysis.xlsx')
 
     data_description.to_excel(writer,'Data Description')
     data_samples.to_excel(writer,'Data Samples')
     freqs.to_excel(writer,'Classes Balance')
+    r_discr.to_excel(writer, 'Intrinsic Discrepancy')
 
     writer.save()
 
@@ -64,7 +71,7 @@ def exportCategorial():
 def exportMetrics():
     return True
 
-def intrinsicDiscrepancy(x,y):
+def intrinsicDiscrepancy(x, y):
     sumx = sum(xval for xval in x)
     sumy = sum(yval for yval in y)
     id1  = 0.0
@@ -73,10 +80,11 @@ def intrinsicDiscrepancy(x,y):
         if (xval>0) and (yval>0):
             id1 += (float(xval)/sumx) * np.log((float(xval)/sumx)/(float(yval)/sumy))
             id2 += (float(yval)/sumy) * np.log((float(yval)/sumy)/(float(xval)/sumx))
-    return min(id1,id2)
+    return min(id1, id2)
 
 def calculateDiscrepancy(data):
     discr_list = []
+    discr_list2 = []
 
     for col in range(len(data.columns)):
         new_data = data.iloc[:, col]
@@ -88,5 +96,6 @@ def calculateDiscrepancy(data):
         colum_name = data.columns.values[col]
         discrepancy = intrinsicDiscrepancy(hist1, hist2)
 
-        discr_list.append(str(colum_name) + ' - ' + str(discrepancy))
-    return discr_list
+        discr_list2.append(str(colum_name))
+        discr_list.append(str(round(discrepancy, 3)))
+    return discr_list, discr_list2
