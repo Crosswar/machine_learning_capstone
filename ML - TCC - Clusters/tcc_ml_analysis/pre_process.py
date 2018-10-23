@@ -7,12 +7,21 @@ Created on Fri Jun 29 02:37:12 2018
 """
 
 import pandas as pd
+from sklearn.preprocessing import StandardScaler
 
 def readData():
     # Read CSV and rename columns
     columns = ["age", "sex", "cp", "restbp", "chol", "fbs", "restecg",
                "thalach", "exang", "oldpeak", "slope", "ca", "thal", "num"]
     df = pd.read_csv('cleveland.csv', header = 0, names = columns)
+
+    #df2 = df.drop(['chol', 'age', 'restbp', 'thalach'], axis = 1)
+
+    # Scale Data
+    #scaler = StandardScaler()
+    #c = scaler.fit_transform(df[['chol', 'age', 'restbp', 'thalach']])
+    #d = pd.DataFrame(c, columns=['chol', 'age', 'restbp', 'thalach'])
+
     return df
 
 def cleanData(df):

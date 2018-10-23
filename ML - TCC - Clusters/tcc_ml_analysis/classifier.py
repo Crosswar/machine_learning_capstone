@@ -11,7 +11,7 @@ import seaborn as sns
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import confusion_matrix, classification_report, mean_absolute_error
 from sklearn.model_selection import cross_val_score
-from sklearn.preprocessing import StandardScaler, normalize
+from sklearn.preprocessing import StandardScaler, normalize, MinMaxScaler
 from sklearn.naive_bayes import GaussianNB
 from sklearn.ensemble import VotingClassifier
 
@@ -20,10 +20,14 @@ from data_analysis import exportData, exportMetrics, exportPlots, calculateDiscr
 
 from sklearn.linear_model import LogisticRegressionCV, LogisticRegression
 
+
+
 # Get the data, split labels and retrieve the features
 data = readData()
 cleanData(data)
 features, label = getFeatures(data)
+
+
 
 # Split the 'features' and the label data into training and testing sets
 X_train, X_test, y_train, y_test = train_test_split(features,
@@ -37,70 +41,34 @@ exportPlots(data, False)
 exportMetrics()
 
 
+# Visual Analysis
+# Preprocessing TODO
+#min_max_scaler = MinMaxScaler()
 
-### Classifiers
-### Logistic Regression
+#train_scaled = min_max_scaler.fit_transform(X_train)
+#test_scaled = min_max_scaler.fit_transform(X_test)
 
-model_lr = LogisticRegression(random_state=7)
+#df_normalized = pd.DataFrame(train_scaled)
+#df_normalized2 = pd.DataFrame(test_scaled)
 
-clf_lr = model_lr.fit(X_train, y_train)
-pred_lr = model_lr.predict(X_test)
+data2 = data.copy()
 
-plt.hist(pred_lr)
+data2['sex'] = data2['sex'].apply(lambda x: 'Mulher' if x == 0 else 'Homem')
+data2['DCV'] = data2['num'].apply(lambda x: 'Sim' if x == 1 else 'Não')
+data2['Glicemia Jejum'] = data2['fbs'].apply(lambda x: '> 120 mg/dl' if x == 1 else '< 120mg/dl')
 
-print(classification_report(y_test, pred_lr))
-print(clf_lr.score(X_test, y_test))
+#g = sns.lmplot(x="age", y="chol", hue="DCV", col="Glicemia Jejum", row="sex", data=data)
+#g = (g.set_axis_labels("Idade", "Colesterol"))
+data3 = data[data.num > 0 ]
+sns.jointplot(x="age", y="chol", data=data, kind="reg")
 
+#sns.pairplot(data, hue='num', size=1.5)
 
-from sklearn.model_selection import StratifiedKFold
-from sklearn.feature_selection import RFECV
-
-# Create the RFE object and compute a cross-validated score.
-svc = LogisticRegression()
-# The "accuracy" scoring is proportional to the number of correct
-# classifications
-rfecv = RFECV(estimator=svc, step=1, cv=StratifiedKFold(6),
-              scoring='accuracy')
-rfecv.fit(X_test, y_test)
-
-print("Optimal number of features : %d" % rfecv.n_features_)
-print(rfecv.get_support(indices=True))
-X_new = rfecv.transform(features)
-print(features.columns[rfecv.get_support()])
-#print(np.absolute(rfecv.estimator_.coef_))
-
-# Plot number of features VS. cross-validation scores
-plt.figure()
-plt.xlabel("Number of features selected")
-plt.ylabel("Cross validation score (nb of correct classifications)")
-plt.plot(range(1, len(rfecv.grid_scores_) + 1), rfecv.grid_scores_)
-plt.show()
+# Freq. max.
+g = sns.relplot(x="age", y="thalach", kind="line", data=data, ci=None, style="num" )
+g.fig.autofmt_xdate()
 
 
-### Logistic Regression - CrossValidation
-clf_lrCV = LogisticRegressionCV(cv= 3, random_state= 0, penalty='l2',
-                           multi_class='multinomial').fit(X_train, y_train)
-
-# Predict class labels for the training set
-predicted2 = clf_lrCV.predict(X_test)
-
-print('Mean Absolute Error LRCV- ', mean_absolute_error(y_test, predicted2))
-print('LogisticRegression Test - ', clf_lrCV.score(X_test, y_test))
-
-### Gaussian Naive Bayes
-gnb = GaussianNB()
-gnb = gnb.fit(X_train, y_train)
-predicted3 = gnb.predict(X_test)
-print('Mean Absolute Error GNB - ', mean_absolute_error(y_test, predicted3))
-print('Gaussian NB Test - ', gnb.score(X_test, y_test))
-
-#cm = confusion_matrix(y_train, predicted1)
-print(classification_report(y_test, predicted2))
-print(classification_report(y_test, predicted3))
-
-
-#gnb_lr=VotingClassifier(estimators=[('Guassian Naive Bayes', gnb),('Logistic Regression', clf_lr)], voting='soft', weights=[2,1]).fit(X_train,y_train)
-#print('The accuracy for Guassian Naive Bayes and Logistic Regression:',gnb_lr.score(X_test,y_test))
 
 # Example of a confusion matrix in Python
 #results = confusion_matrix(y_test, predictions)
@@ -117,8 +85,6 @@ print(classification_report(y_test, predicted3))
 # sns.heatmap(df.corr(), annot=True)
 # sns.pairplot(df)
 
-
-#sns.distplot(df['age'])
 
 # Standardize
 #scaler = StandardScaler()

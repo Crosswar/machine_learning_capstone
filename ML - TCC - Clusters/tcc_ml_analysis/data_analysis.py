@@ -9,7 +9,7 @@ import matplotlib as mpl
 import matplotlib.pyplot as plt
 import numpy as np
 import seaborn as sns
-import scipy.stats as sc
+from scipy.stats import norm
 
 # Set dpi of images to obtain a higher quality
 mpl.rc("savefig", dpi=150)
@@ -47,6 +47,11 @@ def exportData(data, y_train, y_test, label):
 # Export Matrices and Regression Plots
 def exportPlots(data, flag):
     if(flag):
+        exportCorrelationMatrix(data)
+        exportDataExploration(data)
+
+
+def exportCorrelationMatrix(data):
         # Calculate correlation
         corr = data.corr()
 
@@ -55,14 +60,26 @@ def exportPlots(data, flag):
         mask = np.zeros_like(corr, dtype=np.bool) # create mask to cover the upper triangle
         mask[np.triu_indices_from(mask)] = True
 
-        sns.heatmap(corr, annot=True, mask=mask, linewidths=0.01)
+        #sns.heatmap(corr, annot=True, mask=mask, linewidths=0.01)
 
-        fig.suptitle('Correlation Matrix', fontsize=14)
-        fig.savefig('plots/matrices/correlation_matrix.png')
+        #fig.suptitle('Correlation Matrix', fontsize=14)
+        #fig.savefig('correlation_matrix.png')
+
+def exportDataExploration(data):
+        data_names = ['Idade', 'Colesterol', 'Freq. Cardíaca', 'Teste Tálium']
+        data_columns = ['age', 'chol', 'thalach', 'thal']
+
+        for i, z in zip(data_names, data_columns):
+            fig = plt.figure(figsize=(15, 9))
+            sns.distplot(data[z], fit=norm, axlabel=i, kde=False, color='blue')
+            fig.savefig('images/Plot_'+ i + '.png')
+
 
         #sns.lmplot(x="age", y="chol", hue="num", col="fbs", row="sex", data=data)
-        sns.jointplot(x="age", y="chol", hue="num", data=data, kind="reg");
+        #sns.jointplot(x="age", y="chol", hue="num", data=data, kind="reg")
 
+        ##sns.distplot(data[att], fit=norm, axlabel=label, kde=False, color='blue')
+        #sns.distplot(data['chol'], fit=norm, axlabel='Colesterol', rug = True, bins=15, kde=False, color='blue')
 
 # Export Categorical
 def exportCategorial():
