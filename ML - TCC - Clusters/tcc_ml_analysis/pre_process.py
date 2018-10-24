@@ -36,3 +36,21 @@ def getFeatures(df):
     # Predict Attribute (label) - Heart Disease
     label = df['num']
     return features, label
+
+def prepareDataForCharts(data):
+    data2 = data.copy()
+
+    data2['sex'] = data2['sex'].apply(lambda x: 'Mulher' if x == 0 else 'Homem')
+    data2['Idade'] = data2['age']
+    data2['Freq. Cardíaca'] = data2['thalach']
+    data2['DCV'] = data2['num'].apply(lambda x: 'Sim' if x == 1 else 'Não')
+    data2['Glicemia Jejum'] = data2['fbs'].apply(lambda x: '> 120 mg/dl' if x == 1 else '< 120mg/dl')
+
+    return data2
+
+def prepareDataForExcel(data):
+    exploreDF = data.copy()
+    exploreDF.drop(['cp', 'fbs', 'restecg', 'exang', 'oldpeak', 'slope', 'ca', 'thal', 'num'],
+                   axis=1,
+                   inplace=True)
+    return exploreDF

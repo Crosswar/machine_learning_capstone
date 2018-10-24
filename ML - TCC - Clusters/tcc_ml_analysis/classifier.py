@@ -4,6 +4,7 @@ Created on Mon Oct  8 22:19:56 2018
 
 @author: Gabriel
 """
+# Libraries
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
@@ -11,23 +12,21 @@ import seaborn as sns
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import confusion_matrix, classification_report, mean_absolute_error
 from sklearn.model_selection import cross_val_score
-from sklearn.preprocessing import StandardScaler, normalize, MinMaxScaler
+from sklearn.preprocessing import MinMaxScaler
 from sklearn.naive_bayes import GaussianNB
 from sklearn.ensemble import VotingClassifier
-
-from pre_process import readData, cleanData, getFeatures
-from data_analysis import exportData, exportMetrics, exportPlots, calculateDiscrepancy
-
 from sklearn.linear_model import LogisticRegressionCV, LogisticRegression
 
+# Specific Files of the project
+from pre_process import readData, cleanData, getFeatures
+from data_analysis import exportData, exportMetrics
+from visual_analysis import exportPlots
 
 
 # Get the data, split labels and retrieve the features
 data = readData()
 cleanData(data)
 features, label = getFeatures(data)
-
-
 
 # Split the 'features' and the label data into training and testing sets
 X_train, X_test, y_train, y_test = train_test_split(features,
@@ -51,22 +50,6 @@ exportMetrics()
 #df_normalized = pd.DataFrame(train_scaled)
 #df_normalized2 = pd.DataFrame(test_scaled)
 
-data2 = data.copy()
-
-data2['sex'] = data2['sex'].apply(lambda x: 'Mulher' if x == 0 else 'Homem')
-data2['DCV'] = data2['num'].apply(lambda x: 'Sim' if x == 1 else 'Não')
-data2['Glicemia Jejum'] = data2['fbs'].apply(lambda x: '> 120 mg/dl' if x == 1 else '< 120mg/dl')
-
-#g = sns.lmplot(x="age", y="chol", hue="DCV", col="Glicemia Jejum", row="sex", data=data)
-#g = (g.set_axis_labels("Idade", "Colesterol"))
-data3 = data[data.num > 0 ]
-sns.jointplot(x="age", y="chol", data=data, kind="reg")
-
-#sns.pairplot(data, hue='num', size=1.5)
-
-# Freq. max.
-g = sns.relplot(x="age", y="thalach", kind="line", data=data, ci=None, style="num" )
-g.fig.autofmt_xdate()
 
 
 
