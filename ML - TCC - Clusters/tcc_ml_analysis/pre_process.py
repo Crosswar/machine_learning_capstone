@@ -40,9 +40,12 @@ def getFeatures(df):
 def prepareDataForCharts(data):
     data2 = data.copy()
 
-    data2['sex'] = data2['sex'].apply(lambda x: 'Mulher' if x == 0 else 'Homem')
+    # Create new columns with proper names for visualization
+    data2['Colesterol'] = data2['chol']
     data2['Idade'] = data2['age']
     data2['Freq. Cardíaca'] = data2['thalach']
+
+    data2['sex'] = data2['sex'].apply(lambda x: 'Mulher' if x == 0 else 'Homem')
     data2['DCV'] = data2['num'].apply(lambda x: 'Sim' if x == 1 else 'Não')
     data2['Glicemia Jejum'] = data2['fbs'].apply(lambda x: '> 120 mg/dl' if x == 1 else '< 120mg/dl')
 

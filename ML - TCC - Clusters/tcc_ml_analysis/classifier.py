@@ -36,8 +36,23 @@ X_train, X_test, y_train, y_test = train_test_split(features,
 
 # Exploratory Data - Export results to excel or images
 exportData(data, y_train, y_test, label)
-exportPlots(data, False)
+exportPlots(data, True)
 exportMetrics()
+
+data2 = data.copy()
+
+# Create new columns with proper names for visualization
+data2['Colesterol'] = data2['chol']
+data2['Idade'] = data2['age']
+data2['Freq. Cardíaca'] = data2['thalach']
+
+data2['sex'] = data2['sex'].apply(lambda x: 'Mulher' if x == 0 else 'Homem')
+data2['DCV'] = data2['num'].apply(lambda x: 'Sim' if x == 1 else 'Não')
+data2['Glicemia Jejum'] = data2['fbs'].apply(lambda x: '> 120 mg/dl' if x == 1 else '< 120mg/dl')
+
+sns.set(color_codes=True)
+fig = plt.figure(figsize=(15, 9))
+sns.set(font_scale=1)
 
 
 # Visual Analysis

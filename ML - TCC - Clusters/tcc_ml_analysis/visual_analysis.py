@@ -18,7 +18,6 @@ data_columns = ['age', 'chol', 'thalach']
 # Set dpi of images to obtain a higher quality
 mpl.rc("savefig", dpi=150)
 sns.set(color_codes=True)
-fig = plt.figure(figsize=(15, 9))
 
 # Define a folder to save images
 def setPlotFolder(name):
@@ -30,15 +29,21 @@ def exportPlots(data, flag):
         # Create Labels and define values for better visualization
         prep_data = prepareDataForCharts(data)
 
+
         # Generate Specific plots
         exportCorrelationMatrix(data)
-        exportDataExploration(data)
         exportAttributeAnalysis(prep_data)
+        exportDataExploration(data)
 
 def exportAttributeAnalysis(data):
+    fig = plt.figure(figsize=(15, 9))
     # Thalach Attribute vs Age with respect to Heart Disease
     fig = sns.relplot(x="Idade", y="Freq. Cardíaca", kind="line", data=data, ci=None, hue="DCV", aspect=2)
     fig.savefig(setPlotFolder("Freq_Idade"))
+
+    # Scatter to explore dataset
+    #sns.scatterplot(x="Idade", y="Colesterol", hue="DCV", style="DCV", data=data, s=100)
+    #fig.savefig("images/Scatter.png")
 
 
 def exportCorrelationMatrix(data):
@@ -49,12 +54,14 @@ def exportCorrelationMatrix(data):
         mask = np.zeros_like(corr, dtype=np.bool) # create mask to cover the upper triangle
         mask[np.triu_indices_from(mask)] = True
 
+        fig = plt.figure(figsize=(15, 9))
         sns.heatmap(corr, annot=True, mask=mask, linewidths=0.01)
 
         fig.suptitle('Matriz de Correlação', fontsize=14)
         fig.savefig(setPlotFolder("matriz_correlação"))
 
 def exportDataExploration(data):
+        sns.set(font_scale=2)
         # Generate a chart for each column specified on the constant data_columns
         for i, z in zip(data_names, data_columns):
             fig = plt.figure(figsize=(15, 9))
