@@ -36,7 +36,7 @@ X_train, X_test, y_train, y_test = train_test_split(features,
 
 # Exploratory Data - Export results to excel or images
 exportData(data, y_train, y_test, label)
-exportPlots(data, True)
+exportPlots(data, False)
 exportMetrics()
 
 data2 = data.copy()
@@ -46,15 +46,17 @@ data2['Colesterol'] = data2['chol']
 data2['Idade'] = data2['age']
 data2['Freq. Cardíaca'] = data2['thalach']
 
-data2['sex'] = data2['sex'].apply(lambda x: 'Mulher' if x == 0 else 'Homem')
+data2['Sexo'] = data2['sex'].apply(lambda x: 'Mulher' if x == 0 else 'Homem')
 data2['DCV'] = data2['num'].apply(lambda x: 'Sim' if x == 1 else 'Não')
 data2['Glicemia Jejum'] = data2['fbs'].apply(lambda x: '> 120 mg/dl' if x == 1 else '< 120mg/dl')
 
 sns.set(color_codes=True)
 fig = plt.figure(figsize=(15, 9))
-sns.set(font_scale=1)
+sns.set(font_scale=1.5)
 
-
+sns.scatterplot(x="Idade", y="Colesterol", hue="DCV", style="DCV", data=data2, s=100)
+plt.axvline(55, color="k", linestyle="--", linewidth=1)
+plt.axhline(200, color="k", linestyle="--", linewidth=1)
 # Visual Analysis
 # Preprocessing TODO
 #min_max_scaler = MinMaxScaler()
