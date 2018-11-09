@@ -38,8 +38,10 @@ def exportPlots(data, flag):
 def exportAttributeAnalysis(data):
     fig = plt.figure(figsize=(15, 9))
     # Thalach Attribute vs Age with respect to Heart Disease
+    sns.set(font_scale=1.5)
     fig = sns.relplot(x="Idade", y="Freq. Cardíaca", kind="line", data=data, ci=None, hue="DCV", aspect=2)
     fig.savefig(setPlotFolder("Freq_Idade"))
+    plt.axhline(140, color="k", linestyle="--", linewidth=1)
 
     # Scatter to explore dataset
     #sns.scatterplot(x="Idade", y="Colesterol", hue="DCV", style="DCV", data=data, s=100)

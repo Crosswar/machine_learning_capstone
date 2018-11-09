@@ -54,9 +54,10 @@ sns.set(color_codes=True)
 fig = plt.figure(figsize=(15, 9))
 sns.set(font_scale=1.5)
 
-sns.scatterplot(x="Idade", y="Colesterol", hue="DCV", style="DCV", data=data2, s=100)
-plt.axvline(55, color="k", linestyle="--", linewidth=1)
-plt.axhline(200, color="k", linestyle="--", linewidth=1)
+#sns.scatterplot(x="Idade", y="Colesterol", hue="DCV", style="DCV", data=data2, s=100)
+#plt.axvline(55, color="k", linestyle="--", linewidth=1)
+#plt.axhline(200, color="k", linestyle="--", linewidth=1)
+
 # Visual Analysis
 # Preprocessing TODO
 #min_max_scaler = MinMaxScaler()
@@ -67,32 +68,12 @@ plt.axhline(200, color="k", linestyle="--", linewidth=1)
 #df_normalized = pd.DataFrame(train_scaled)
 #df_normalized2 = pd.DataFrame(test_scaled)
 
+features_continuous=["age", "restbp", "chol", "thalach", "oldpeak", "num"]
 
+sns.boxplot(data=data2[features_continuous])
 
 
 # Example of a confusion matrix in Python
 #results = confusion_matrix(y_test, predictions)
 #plt.figure(figsize = (10,7))
 
-#f = sns.heatmap(cm, annot=True)
-
-#plt.xlabel("Predição")
-#plt.ylabel("Valor Real")
-#plt.show(f)
-# Correlation and Pairplot
-#fig = plt.figure(figsize=(20, 20))
-#ax = plt.gca()
-# sns.heatmap(df.corr(), annot=True)
-# sns.pairplot(df)
-
-
-# Standardize
-#scaler = StandardScaler()
-#c = scaler.fit_transform(df[['chol', 'age']])
-#d = pd.DataFrame(c, columns=['chol', 'age'])
-#sns.distplot(d['chol'])
-#x_array = np.array(df['age'])
-#xx = normalize([x_array])
-
-#scaler = StandardScaler()
-#Xa = scaler.fit_transform(features)
