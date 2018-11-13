@@ -22,7 +22,7 @@ def readData():
     #c = scaler.fit_transform(df[['chol', 'age', 'restbp', 'thalach']])
     #d = pd.DataFrame(c, columns=['chol', 'age', 'restbp', 'thalach'])
 
-    return df
+    return df, columns
 
 def cleanData(df):
     # Encoding heart-disease class to a binary value
@@ -57,3 +57,8 @@ def prepareDataForExcel(data):
                    axis=1,
                    inplace=True)
     return exploreDF
+
+def encodeFeatures(data):
+    ndata = pd.get_dummies(data=data, columns=["cp", "restecg", "slope", "thal"])
+    f, l = getFeatures(ndata)
+    return f, l

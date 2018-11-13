@@ -76,3 +76,16 @@ def exportDataExploration(data):
 
         ##sns.distplot(data[att], fit=norm, axlabel=label, kde=False, color='blue')
         #sns.distplot(data['chol'], fit=norm, axlabel='Colesterol', rug = True, bins=15, kde=False, color='blue')
+
+
+
+#sns.set(color_codes=True)
+#fig = plt.figure(figsize=(15, 9))
+#sns.set(font_scale=1.5)
+
+#sns.scatterplot(x="Idade", y="Colesterol", hue="DCV", style="DCV", data=data2, s=100)
+#plt.axvline(55, color="k", linestyle="--", linewidth=1)
+#plt.axhline(200, color="k", linestyle="--", linewidth=1)
+
+#features_continuous=["age", "restbp", "chol", "thalach", "oldpeak", "num"]
+#sns.boxplot(data=data2[features_continuous])
